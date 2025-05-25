@@ -1,0 +1,39 @@
+import colorama
+from colorama import Fore, Style
+from config import load_config
+from core_rag import CoreRAG
+from doc_processing import load_sample_documents
+
+def main():
+    colorama.init(autoreset=True)
+    config = load_config()
+    rag = CoreRAG(config)
+    sample_docs = [
+        # ... (copy your sample_docs here or use load_sample_documents)
+    ]
+    info = rag.get_collection_info()
+    if info['document_count'] != 0:
+        print(f"{Fore.YELLOW}Clearing existing collection...{Style.RESET_ALL}")
+        rag.vector_store.clear()
+        info = rag.get_collection_info()
+    print(f"{Fore.GREEN}Adding sample documents...{Style.RESET_ALL}")
+    rag.add_documents(sample_docs)
+    print(f"\n{Fore.CYAN}=== RAG System Ready ==={Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Ask questions about the documents (type 'quit' to exit){Style.RESET_ALL}")
+    while True:
+        question = input(f"\n{Fore.MAGENTA}Your question: {Style.RESET_ALL}").strip()
+        if question.lower() in ['quit', 'exit', 'q']:
+            break
+        if question:
+            try:
+                result = rag.query(question)
+                print(f"\n{Fore.GREEN}Answer: {result['answer']}{Style.RESET_ALL}")
+                print(f"\n{Fore.YELLOW}Sources used: {len(result['sources'])}{Style.RESET_ALL}")
+                for i, source in enumerate(result['sources']):
+                    print(f"  {Fore.BLUE}{i+1}. {source['id']} (distance: {source['distance']:.3f}){Style.RESET_ALL}")
+            except Exception as e:
+                print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}")
+
+if __name__ == "__main__":
+    main()
+
