@@ -31,6 +31,11 @@ This project implements a professional RAG (Retrieval-Augmented Generation) pipe
 - **Retrieval**: Find relevant documents for a user query.
 - **Generation**: Use OpenAI's LLMs to answer questions using retrieved context.
 
+Full Article : [https://medium.com/@learn-simplified/my-making-of-project-manager-ai-agent-455d2f0bfdca
+
+![Design Diagram](design_docs/design.png)
+
+
 The codebase is modular, with clear separation of concerns for configuration, vector storage, LLM interaction, document processing, and CLI/demo utilities.
 
 ---
