@@ -1,258 +1,222 @@
-# Simple RAG System with ChromaDB
+# Professional RAG System with ChromaDB and OpenAI
 
-A simple Retrieval-Augmented Generation (RAG) system using OpenAI embeddings and ChromaDB vector database.
+A robust, modular Retrieval-Augmented Generation (RAG) system leveraging OpenAI's LLMs and ChromaDB for vector storage. This project is designed for extensibility, clarity, and real-world use, with a focus on best practices and professional code organization.
+
+---
+
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Setup & Installation](#setup--installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+  - [Quick Start (CLI)](#quick-start-cli)
+  - [Python API Usage](#python-api-usage)
+  - [Demo Scripts](#demo-scripts)
+- [Document Processing](#document-processing)
+- [Extending the System](#extending-the-system)
+- [Troubleshooting & Tips](#troubleshooting--tips)
+- [Dependencies](#dependencies)
+- [License](#license)
+- [Contributing](#contributing)
+
+---
+
+## Overview
+This project implements a professional RAG (Retrieval-Augmented Generation) pipeline:
+- **Document Ingestion**: Load, chunk, and embed documents (text, files, web pages).
+- **Vector Storage**: Store embeddings in ChromaDB for fast similarity search.
+- **Retrieval**: Find relevant documents for a user query.
+- **Generation**: Use OpenAI's LLMs to answer questions using retrieved context.
+
+The codebase is modular, with clear separation of concerns for configuration, vector storage, LLM interaction, document processing, and CLI/demo utilities.
+
+---
 
 ## Features
+- **OpenAI Integration**: Supports latest OpenAI embedding and chat models.
+- **ChromaDB Vector Store**: Local, persistent vector database for fast retrieval.
+- **Flexible Document Processing**: Chunking, file and web ingestion, metadata support.
+- **Interactive CLI**: Colorful, user-friendly command-line interface.
+- **Extensible Demos**: Example scripts for basic, advanced, and interactive usage.
+- **Environment-based Configuration**: Secure, flexible, and production-ready.
+- **Professional Code Structure**: Modular, testable, and easy to extend.
 
-- **OpenAI Integration**: Uses OpenAI embeddings and chat models
-- **ChromaDB Vector Storage**: Local vector database for document storage
-- **Document Processing**: Support for text files and web pages
-- **Environment Configuration**: Secure API key management with .env files
-- **Interactive Queries**: Command-line interface for asking questions
+---
+
+## Architecture
+```
+[User/CLI/API]
+     |
+[core_rag.py] <--- [llm_client.py] (OpenAI)
+     |           <--- [config.py] (env/config)
+     |
+[vector_store.py] (ChromaDB)
+     |
+[doc_processing.py] (chunking, ingestion)
+```
+
+---
 
 ## Project Structure
-
 ```
-simple-rag/
-├── requirements.txt         # Python dependencies
-├── .env                    # Environment variables (create from template)
-├── rag_app.py             # Main RAG application
-├── document_utils.py      # Document processing utilities
-├── example.py             # Demo and example usage
-├── README.md              # This file
-└── chroma_db/            # ChromaDB storage (created automatically)
+.
+├── cli_runner.py         # Main CLI entry point (colorful, interactive)
+├── config.py             # Loads environment/config variables
+├── core_rag.py           # Core RAG pipeline logic
+├── demo_runner.py        # Demos: basic, document, interactive
+├── doc_processing.py     # Document chunking, file/web ingestion
+├── document_utils.py     # (Legacy) Document processing utilities
+├── example_script.py     # (Legacy) Example usage
+├── llm_client.py         # OpenAI API wrapper
+├── rag_app.py            # (Legacy) Monolithic RAG app
+├── vector_store.py       # ChromaDB vector store logic
+├── requirements.txt      # Python dependencies
+├── .env                  # Environment variables (see below)
+├── README.md             # This file
+└── chroma_db/            # ChromaDB persistent storage
 ```
 
-## Setup Instructions
+---
 
-### 1. Clone and Install Dependencies
+## Setup & Installation
 
+### 1. Clone the Repository
 ```bash
 git clone <repository-url>
-cd simple-rag
+cd <project-folder>
+```
+
+### 2. Install Dependencies
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Configure Environment Variables
-
-Create a `.env` file in the project root:
-
-```bash
-cp .env.template .env
-```
-
-Edit `.env` and add your OpenAI API key:
-
+### 3. Configure Environment Variables
+Create a `.env` file in the project root (see `.env.template` if available):
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_API_KEY=sk-...your_openai_key...
 CHROMA_DB_PATH=./chroma_db
 EMBEDDING_MODEL=text-embedding-3-small
 CHAT_MODEL=gpt-4o-mini
 ```
 
-### 3. Get OpenAI API Key
+---
 
-1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Create an account or sign in
-3. Generate a new API key
-4. Add it to your `.env` file
+## Configuration
+- **OPENAI_API_KEY**: Your OpenAI API key (required)
+- **CHROMA_DB_PATH**: Path for ChromaDB storage (default: `./chroma_db`)
+- **EMBEDDING_MODEL**: OpenAI embedding model (default: `text-embedding-3-small`)
+- **CHAT_MODEL**: OpenAI chat model (default: `gpt-4o-mini`)
+
+---
 
 ## Usage
 
-### Quick Start
-
-Run the example script:
-
+### Quick Start (CLI)
+Run the interactive CLI:
 ```bash
-python example.py
+python cli_runner.py
 ```
+- Loads sample documents
+- Lets you ask questions interactively
+- Colorful output for answers and sources
 
-This will:
-- Load sample documents
-- Demonstrate basic RAG queries
-- Provide an interactive session
-
-### Basic Usage
-
+### Python API Usage
 ```python
-from rag_app import SimpleRAG
+from core_rag import CoreRAG
+from config import load_config
 
-# Initialize RAG system
-rag = SimpleRAG()
-
-# Add documents
+rag = CoreRAG(load_config())
 documents = [
-    {
-        'text': "Your document content here...",
-        'metadata': {'source': 'example'},
-        'id': 'doc_1'
-    }
+    {'text': 'Your content...', 'metadata': {'source': 'example'}, 'id': 'doc_1'}
 ]
 rag.add_documents(documents)
-
-# Query the system
 result = rag.query("Your question here")
 print(result['answer'])
 ```
 
-### Document Processing
+### Demo Scripts
+Run all demos:
+```bash
+python demo_runner.py
+```
+- **Basic Usage**: Loads sample docs, runs example queries
+- **Document Processing**: Shows file/web chunking
+- **Interactive Session**: Query loaded docs in a loop
 
+---
+
+## Document Processing
+- **Chunking**: Documents are split into overlapping chunks for better retrieval.
+- **File Ingestion**: Use `process_file()` to chunk and ingest text files.
+- **Web Ingestion**: Use `process_url()` to fetch, clean, and chunk web pages.
+- **Raw Text**: Use `process_text()` for manual input.
+
+Example:
 ```python
-from document_utils import DocumentProcessor
-
-processor = DocumentProcessor()
-
-# Process a text file
+from doc_processing import DocProcessor
+processor = DocProcessor(chunk_size=1000, chunk_overlap=200)
 docs = processor.process_file('path/to/file.txt')
 rag.add_documents(docs)
-
-# Process a web page
-docs = processor.process_url('https://example.com')
-rag.add_documents(docs)
-
-# Process raw text
-docs = processor.process_text("Your text content", "source_name")
-rag.add_documents(docs)
 ```
 
-## Configuration Options
+---
 
-### Environment Variables
+## Extending the System
+- **Add new document types**: Extend `DocProcessor` for PDFs, etc.
+- **Swap vector DB**: Replace `vector_store.py` for other vector DBs.
+- **Change LLM provider**: Update `llm_client.py` for Anthropic, Azure, etc.
+- **Add metadata filtering**: Enhance retrieval logic in `vector_store.py`.
+- **Integrate with web apps**: Use `core_rag.py` as a backend module.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `OPENAI_API_KEY` | Required | Your OpenAI API key |
-| `CHROMA_DB_PATH` | `./chroma_db` | Path to ChromaDB storage |
-| `EMBEDDING_MODEL` | `text-embedding-3-small` | OpenAI embedding model |
-| `CHAT_MODEL` | `gpt-4o-mini` | OpenAI chat model |
+---
 
-### Document Processing
+## Troubleshooting & Tips
+- **API Key Errors**: Ensure your `.env` is correct and the key is valid.
+- **ChromaDB Issues**: Delete `chroma_db/` if you want a fresh start.
+- **Import Errors**: Run `pip install -r requirements.txt` again.
+- **Performance**: Tune chunk size/overlap and `n_results` for your use case.
+- **Color Output**: If colors don't show, ensure your terminal supports ANSI colors.
 
-```python
-processor = DocumentProcessor(
-    chunk_size=1000,      # Size of text chunks
-    chunk_overlap=200     # Overlap between chunks
-)
-```
-
-## API Reference
-
-### SimpleRAG Class
-
-#### Methods
-
-- `add_documents(documents)` - Add documents to vector database
-- `search_documents(query, n_results=3)` - Search for relevant documents
-- `generate_response(query, context_docs)` - Generate AI response with context
-- `query(question, n_results=3)` - Complete RAG pipeline
-- `get_collection_info()` - Get collection statistics
-
-#### Document Format
-
-```python
-{
-    'text': str,           # Document content
-    'metadata': dict,      # Optional metadata
-    'id': str             # Unique identifier
-}
-```
-
-### DocumentProcessor Class
-
-#### Methods
-
-- `process_file(file_path)` - Process text file into chunks
-- `process_url(url)` - Process web page into chunks  
-- `process_text(text, source_name)` - Process raw text into chunks
-- `chunk_text(text, metadata)` - Split text into chunks
-
-## Examples
-
-### Interactive Session
-
-```bash
-python rag_app.py
-```
-
-### Web Page Processing
-
-```python
-from rag_app import SimpleRAG
-from document_utils import DocumentProcessor
-
-rag = SimpleRAG()
-processor = DocumentProcessor()
-
-# Load Wikipedia article
-docs = processor.process_url("https://en.wikipedia.org/wiki/Artificial_intelligence")
-rag.add_documents(docs)
-
-# Query the content
-result = rag.query("What is artificial intelligence?")
-print(result['answer'])
-```
-
-### File Processing
-
-```python
-# Process a text file
-docs = processor.process_file("data/document.txt", "research_paper")
-rag.add_documents(docs)
-
-# Query with file context
-result = rag.query("Summarize the main findings")
-```
-
-## Troubleshooting
-
-### Common Issues
-
-**OpenAI API Key Error**
-- Ensure your API key is valid and has sufficient credits
-- Check the `.env` file is in the project root
-- Verify the key starts with `sk-`
-
-**ChromaDB Permission Error**
-- Ensure write permissions in the project directory
-- Try changing `CHROMA_DB_PATH` to a different location
-
-**Import Errors**
-- Run `pip install -r requirements.txt`
-- Ensure you're using Python 3.8+
-
-### Performance Tips
-
-- Use smaller chunk sizes for more precise retrieval
-- Increase `n_results` for more context in responses
-- Adjust `chunk_overlap` based on your document type
-- Consider using `text-embedding-3-large` for better quality (higher cost)
+---
 
 ## Dependencies
-
 - `openai` - OpenAI API client
 - `chromadb` - Vector database
 - `python-dotenv` - Environment variable management
 - `requests` - HTTP requests for web scraping
 - `beautifulsoup4` - HTML parsing
 - `langchain-text-splitters` - Text chunking utilities
-
-## License
-
-MIT License - feel free to use and modify for your projects.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+- `colorama` - Colorful CLI output
+- `numpy` - Math backend for embeddings
 
 ---
 
-For more advanced RAG implementations, consider:
-- Adding support for PDF documents
-- Implementing hybrid search (dense + sparse)
-- Adding conversation memory
-- Using different embedding models
-- Implementing document metadata filtering
+## License
+MIT License - use, modify, and contribute freely.
+
+---
+
+## Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes (with tests if possible)
+4. Submit a pull request
+
+---
+
+## Advanced Topics & Ideas
+- Add PDF/document ingestion (see `PyPDF2` or `pdfplumber`)
+- Implement hybrid search (dense + keyword)
+- Add conversation memory/history
+- Use advanced OpenAI models (e.g., `gpt-4-turbo`)
+- Deploy as a web API (FastAPI, Flask)
+- Integrate with front-end apps (Streamlit, React)
+
+---
+
+For questions, issues, or suggestions, please open an issue or pull request on GitHub.
+
