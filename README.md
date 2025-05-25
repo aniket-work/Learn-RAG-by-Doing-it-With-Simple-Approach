@@ -46,6 +46,21 @@ The codebase is modular, with clear separation of concerns for configuration, ve
 
 ---
 
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Language Model | OpenAI GPT-4o-mini | Response generation and chat completion |
+| Embeddings | OpenAI text-embedding-3-small | Document vectorization for semantic search |
+| Vector Database | ChromaDB | Persistent storage and similarity search |
+| Text Processing | LangChain Text Splitters | Document chunking and preprocessing |
+| Web Scraping | BeautifulSoup4 + Requests | Web content extraction and processing |
+| Environment Config | python-dotenv | Secure API key and configuration management |
+| CLI Interface | Colorama | Enhanced terminal output and user experience |
+| HTTP Client | Requests | API communication and web data fetching |
+| Math Operations | NumPy | Vector calculations and numerical processing |
+| Token Management | Tiktoken | OpenAI token counting and optimization |
+| Runtime | Python 3.8+ | Core programming language and ecosystem |
+
+
 ## Architecture
 ```
 [User/CLI/API]
